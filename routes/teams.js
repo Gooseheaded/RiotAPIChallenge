@@ -1,31 +1,48 @@
 'use strict';
 
 var assert = require('assert');
-//var data = require('../data.json');
-var data = {key: '80639ae1-4c81-4e81-a147-67ae8df88074'}
+var apiKey = require('../_/data.json').key;
 var express = require('express');
+var request = require('request');
+var leagueAPI = require('leagueapi')
 var router = express.Router();
 
 /* GET home page. */
-router.get('/by-summoner/:summoner_id', function(req, res, next) {
-  let summID = Number(req.params.summoner_id);
-  assert(typeof summID === 'number', 'Summoner ID was not a number!');
+router.get('/by-summoner/:name/:region', function(req, res, next) {
+  let summonerName = req.params.name;
+  let summonerRegion =  req.params.region;
 
-  let region = 'lan';
-  let url = 'https://lan.api.pvp.net/api/lol/' + region +
-  '/v2.4/team/by-summoner/' + summID +
-  '?api_key=' + data.key;
+  leagueAPI.init(apiKey, summonerRegion);
 
-  console.log('EXCECUTING REQUEST AT: ' + url);
-
-  var request = require("request");
-
-  request.get(url, function(err, res, body) {
+  // get summoner id from summoner name
+  leagueAPI.Summoner.getByName(summonerName, function(err, summoner) {
     if(err) {
-      console.log(err);
-
+      // TODO: Handle error!
+      res.end();
     }
-    console.log(body);
+
+    let key = '';
+    for(let k in summoner) { key = k; break; }
+    let summonerID = String(summoner[key].id);
+
+    // get summoner teams from summoner id
+    leagueAPI.getTeams(summonerID, summonerRegion, function(err, teams) {
+      if(err) {
+        // TODO: Handle error!
+        res.end();
+      }
+
+      let teamNames = [];
+      let teamMembers = [];
+      for(let teamNumber in teams[summonerID]) {
+        teamNames.push({
+          'name': teams[summonerID][teamNumber].name,
+          'id': teams[summonerID][teamNumber].fullId,
+        });
+      }
+
+      res.send(teamNames);
+    });
   });
 });
 
