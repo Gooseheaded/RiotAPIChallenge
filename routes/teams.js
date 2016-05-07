@@ -4,7 +4,8 @@ var assert = require('assert');
 var apiKey = require('../_/data.json').key;
 var express = require('express');
 var request = require('request');
-var leagueAPI = require('leagueapi')
+var leagueAPI = require('leagueapi');
+var scoreToLetter = require('../misc.js');
 var router = express.Router();
 
 /* GET list of teams given a summoner name */
@@ -155,13 +156,27 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
           if(p.stats.winner) { score ++; }
           matchGrade[String(p.championId)] = score;
         }
-        console.log(matchGrade);
+
+        let counter = 0;
+        for(let k in matchGrade) {
+          leagueAPI.Static.getChampionById(k, {}, function(err, champ) {
+            if(err) {
+              console.log('leagueAPI.Static.getChampionById');
+              console.log(err);
+              res.end();
+            }
+            matchGrade[champ.name] = scoreToLetter(matchGrade[k]);
+            delete matchGrade[k];
+            counter ++;
+            if(counter >= 10) {
+              res.send(matchGrade);
+            }
+          });
+        }
         matchGrades.push(matchGrade);
       });
       break;  // TODO: remove
     }
-
-    res.send(matchGrades);
   });
 });
 
