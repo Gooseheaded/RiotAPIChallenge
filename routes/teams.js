@@ -13,6 +13,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
   let summonerName = req.params.name;
   let summonerRegion =  req.params.region;
   leagueAPI.init(apiKey, summonerRegion);
+  leagueAPI.setRateLimit(9, 499);
 
   // get summoner id from summoner name
   leagueAPI.Summoner.getByName(summonerName, function(err, summoner) {
@@ -20,6 +21,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
       console.log(err);
       // TODO: Handle error!
       res.end();
+      return;
     }
 
     let key = '';
@@ -31,7 +33,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
       if(err) {
         console.log(err);
         // TODO: Handle error!
-        res.end();
+        return;
       }
 
       let teamNames = [];
@@ -53,6 +55,7 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
   let teamID = req.params.team;
   let teamRegion =  req.params.region;
   leagueAPI.init(apiKey, teamRegion);
+  leagueAPI.setRateLimit(9, 499);
 
   leagueAPI.getTeam(teamID, teamRegion, function(err, teamDTO) {
     if(err) {
@@ -64,22 +67,37 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
 
     let team = teamDTO[teamID];
     let matchIDs = [];
+    let maxMatches = 10;
     for(let m of team.matchHistory) {
-      if(!m.invalid) {
-        matchIDs.push(m.gameId);
+      if(maxMatches <= 0) {
+        break;
       }
+      if(m.invalid) {
+        continue;
+      }
+
+      matchIDs.push([m.gameId, m.win]);
+      maxMatches --;
     }
 
     let matchGrades = [];
-    for(let m of matchIDs) {
-      console.log('Checking id: ' + m);
-      leagueAPI.getMatch(m, false, teamRegion, function(err, match) {
+    for(let m in matchIDs) {
+      console.log('Adding id: ' + matchIDs[m]);
+      leagueAPI.getMatch(matchIDs[m][0], false, teamRegion, function(err, match) {
+        console.log();
+        console.log('Retrieving info for match: '+matchIDs[m][0]+' ['+(Number(m)+1)+'/'+matchIDs.length+']');
         if(err) {
           console.log('leagueAPI.getMatch');
           console.log(err);
           // TODO: Handle error!
-          res.end();
           return;
+        }
+
+        let thisTeam = 0;
+        if(match.teams[0].winner === matchIDs[m][1]) {
+          thisTeam = match.teams[0].teamId;
+        } else {
+          thisTeam = match.teams[1].teamId;
         }
 
         let matchGrade = {};
@@ -138,6 +156,9 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
         }
 
         for(let p of match.participants) {
+          if(p.teamId != thisTeam) {
+            continue;
+          }
           let debug = '';
           let score = 0;
 
@@ -156,32 +177,64 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
           if(p.teamId === tower || tower === 'equal') { score ++; debug += 't';}
           if(p.teamId === inhibitor || inhibitor === 'equal') { score ++; debug += 'i';}
           if(p.stats.winner) { score ++; debug += 'w';}
-          matchGrade[String(p.championId)] = [score, debug];
+
+          var kdacs = '' +
+            p.stats.kills + '/'
+            + p.stats.deaths + '/'
+            + p.stats.assists + ','
+            + p.stats.minionsKilled;
+
+          matchGrade[String(p.championId)] = [score, debug, kdacs];
         }
 
         let counter = 0;
+        leagueAPI.setRateLimit(999, 9999);
         for(let k in matchGrade) {
+          let stop = false;
           leagueAPI.Static.getChampionById(k, {}, function(err, champ) {
             if(err) {
               console.log('leagueAPI.Static.getChampionById');
               console.log(err);
-              res.end();
+              return;
             }
             matchGrade[champ.name] = {
+              'kdacs': matchGrade[k][2],
               'score': matchGrade[k][0],
-              'grade': scoreToGrade(matchGrade[k][0]),
               'debug': matchGrade[k][1],
             };
             delete matchGrade[k];
             counter ++;
-            if(counter >= 10) {
-              res.send(matchGrade);
+            matchGrades.push(matchGrade);
+            console.log(champ.name, matchGrade[champ.name]);
+
+            // FINAL PROCESSING
+            if(counter >= 5 && Number(m)+1 === matchIDs.length) {
+              let powerPicks = {};
+              for(let mg of matchGrades) {
+                for(let champ in mg) {
+                  let prev = powerPicks[champ] ? powerPicks[champ] : {'score': 0, 'count': 0}
+                  powerPicks[champ] = {
+                    'score': prev.score + mg[champ].score,
+                    'count': prev.count + 1,
+                  };
+                }
+              }
+
+              for(let champ in powerPicks) {
+                powerPicks[champ] = scoreToGrade(Math.floor(powerPicks[champ].score / powerPicks[champ].count));
+              }
+
+              console.log();
+              console.log('Delivered.')
+              console.log();
+              res.send(powerPicks);
+              stop = true;
+              return;
             }
           });
+          if(stop) break;
         }
-        matchGrades.push(matchGrade);
       });
-      break;  // TODO: remove
     }
   });
 });
