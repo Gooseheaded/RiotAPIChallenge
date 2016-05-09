@@ -5,6 +5,53 @@
     background-size: cover;
     margin-top: -64px;
     height: 100%;
+    overflow-y: scroll;
+}
+
+.champ-wrap{
+    height: 300px;
+    background: red;
+    border-bottom-left-radius: 65px;
+    border-bottom-right-radius: 65px;
+}
+
+.grade-circ{
+    background: rgba(222,222,222,1);
+    color: rgba(0,0,0,0);
+    font-weight: bolder;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    margin: 0px auto 0 auto;
+    position: relative;
+    top: 200px;
+    z-index: 1;
+}
+
+.grade-circ p{
+    text-align: center;
+    vertical-align: middle;
+    font-size: 20px;
+    color: black;
+    line-height: 50px;
+    
+}
+
+.champ-name{
+    border-bottom-left-radius: 65px;
+    border-bottom-right-radius: 65px;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    top: 160px;
+    height: 76px;
+    line-height: 80px;
+    position: relative;
+}
+
+.grade-wrap{
+    width: 100%;
+    position: relative;
     
 }
 
@@ -48,6 +95,15 @@
     padding: 250px 5% 0px 5%;
     opacity: 0.0;
     display: none;
+}
+
+#row3{
+    
+    padding: 250px 5% 0px 5%;
+        opacity: 0.0;
+    display: none;
+    
+    
 }
 
 .team-wrap{
