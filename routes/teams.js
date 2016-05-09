@@ -229,11 +229,21 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
                 });
               }
 
-              final.sort((a,b) => misc.gradeToScore(a.grade) > misc.gradeToScore(b.grade));
-              console.log(final);
-
+              let postFinal = [final[0]];
+              let reference = 0;
+              for(let f in final) {
+                if(f == 0) { continue; }
+                postFinal.push(final[f]);
+                reference = f;
+                while(reference > 0 && misc.gradeToScore(postFinal[reference].grade) > misc.gradeToScore(postFinal[reference-1].grade)) {
+                  let aux = postFinal[reference-1];
+                  postFinal[reference-1] = postFinal[reference];
+                  postFinal[reference] = aux;
+                  reference --;
+                }
+              }
               powerPicks = {};
-              for(let champ of final) {
+              for(let champ of postFinal) {
                 powerPicks[champ.name] = champ.grade;
               }
 

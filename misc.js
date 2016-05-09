@@ -1,9 +1,5 @@
 'use strict';
 
-var calculateScore = function(match) {
-
-}
-
 var scoreToGrade = function(score) {
   switch(score) {
     case 0: return 'F';
