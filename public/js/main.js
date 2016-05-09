@@ -44,12 +44,14 @@ $(document).ready(function(){
                 
                 for(var i = 0; i < data.length; i++){
                     team[data[i].id] = data[i];
-                    
-                    $('#row2').append('<div class="team-wrap s12 col m4"><div class="blue-grey darken-1 team-sq"><div class="circ-wrap"> <div class="team-circ">'+team[data[i].id].name.charAt(0)+'</div> <p>'+team[data[i].id].name+'</p><p><a data-tid="'+team[data[i].id].id+'" class="btn getpower waves-effect waves-light" type="submit">Get Power picks</a>  </div> </div></div>');
+                   
                     
                     if(i > 2){
                         $('#row2').append('<div class="team-wrap s12 col m6"><div class="blue-grey darken-1 team-sq"><div class="circ-wrap"> <div class="team-circ">'+team[data[i].id].name.charAt(0)+'</div> <p>'+team[data[i].id].name+'</p><p><a data-tid="'+team[data[i].id].id+'" class="btn getpower waves-effect waves-light" type="submit">Get Power picks</a>  </div> </div></div>');
                     
+                    }else{
+	                     
+                    $('#row2').append('<div class="team-wrap s12 col m4"><div class="blue-grey darken-1 team-sq"><div class="circ-wrap"> <div class="team-circ">'+team[data[i].id].name.charAt(0)+'</div> <p>'+team[data[i].id].name+'</p><p><a data-tid="'+team[data[i].id].id+'" class="btn getpower waves-effect waves-light" type="submit">Get Power picks</a>  </div> </div></div>');
                     }
                     
                 }
@@ -83,11 +85,20 @@ $(document).ready(function(){
                                     console.log( team );
                                    
                                    for (var key in data) {
-                                       
- 
+                                    
+                                    var tempkey;
+                                    if (key == "LeBlanc"){
+	                                    tempkey = "Leblanc";
+	                                    
+                                    }else if (key == "Kha'Zix"){
+	                                    tempkey = "Khazix";
+                                    }else{
+	                                    tempkey = key.replace(/[\s\'\`\´\.]/g,"");
+                                    }
+								   	
                                     var grade = data[key];
                                        $('#tname-label').html(team[id].name + " Power Picks <i class='material-icons '>flash_on</i>");
-                                        $('#row3').append('<div class="col m3 l2 s6"> <div class="champ-wrap"> <div class="grade-wrap"> <div class="grade-circ"> <p>'+grade+'</p> </div> </div> <div class=" blue-grey darken-4 champ-name"> <p>'+key+'</p> </div> </div> </div>');
+                                        $('#row3').append('<div class="col m3 l2 s6"> <div class="champ-wrap">  <img class="champ-img" src="http://ddragon.leagueoflegends.com/cdn/img/champion/loading/'+tempkey+'_0.jpg"/>  <div class="grade-wrap"> <div class="grade-circ"> <p>'+grade+'</p> </div> </div> <div class=" blue-grey darken-4 champ-name"> <p>'+key+'</p> </div> </div> </div>');
 
                                     }
                                     
