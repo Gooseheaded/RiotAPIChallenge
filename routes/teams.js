@@ -5,7 +5,7 @@ var apiKey = require('../_/data.json').key;
 var express = require('express');
 var request = require('request');
 var leagueAPI = require('leagueapi');
-var scoreToLetter = require('../misc.js');
+var scoreToGrade = require('../misc.js');
 var router = express.Router();
 
 /* GET list of teams given a summoner name */
@@ -104,57 +104,59 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
           );
         }
 
-        gold.sort((a,b) => a.value > b.value);
-        kills.sort((a,b) => a.value > b.value);
-        assists.sort((a,b) => a.value > b.value);
-        deaths.sort((a,b) => a.value < b.value);
+        gold.sort((a,b) => a.value < b.value);
+        kills.sort((a,b) => a.value < b.value);
+        assists.sort((a,b) => a.value < b.value);
+        deaths.sort((a,b) => a.value > b.value);
 
         let baron = 'equal';
         if(match.teams[0].baronKills > match.teams[1].baronKills) {
-          baron = '100';
+          baron = 100;
         } else if (match.teams[0].baronKills < match.teams[1].baronKills) {
-          baron = '200';
+          baron = 200;
         }
 
         let dragon = 'equal';
         if(match.teams[0].dragonKills > match.teams[1].dragonKills) {
-          dragon = '100';
+          dragon = 100;
         } else if (match.teams[0].dragonKills < match.teams[1].dragonKills) {
-          dragon = '200';
+          dragon = 200;
         }
 
         let tower = 'equal';
         if(match.teams[0].towerKills > match.teams[1].towerKills) {
-          tower = '100';
+          tower = 100;
         } else if (match.teams[0].towerKills < match.teams[1].towerKills) {
-          tower = '200';
+          tower = 200;
         }
 
         let inhibitor = 'equal';
         if(match.teams[0].inhibitorKills > match.teams[1].inhibitorKills) {
-          inhibitor = '100';
+          inhibitor = 100;
         } else if (match.teams[0].inhibitorKills < match.teams[1].inhibitorKills) {
-          inhibitor = '200';
+          inhibitor = 200;
         }
 
         for(let p of match.participants) {
+          let debug = '';
           let score = 0;
 
           for(let i = 0; i < 5; i ++) {
-            if(gold[i].id === p.championId) { score ++; }
-            if(kills[i].id === p.championId) { score ++; }
-            if(assists[i].id === p.championId) { score ++; }
-            if(deaths[i].id === p.championId) { score ++; }
+            if(gold[i].id === p.championId) { score ++; debug += '$'; }
+            if(kills[i].id === p.championId) { score ++; debug += 'k';}
+            if(assists[i].id === p.championId) { score ++; debug += 'a'; }
+            if(deaths[i].id === p.championId) { score ++; debug += 'x'; }
           }
-          if(p.stats.firstBloodAssist || p.stats.firstBloodKill) { score ++; }
-          if(p.stats.firstTowerAssist || p.stats.firstTowerKill) { score ++; }
-          if(p.stats.firstInhibitorAssist || p.stats.firstInhibitorKill) { score ++; }
-          if(p.teamId === baron || baron === 'equal') { score ++; }
-          if(p.teamId === dragon || dragon === 'equal') { score ++; }
-          if(p.teamId === tower || tower === 'equal') { score ++; }
-          if(p.teamId === inhibitor || inhibitor === 'equal') { score ++; }
-          if(p.stats.winner) { score ++; }
-          matchGrade[String(p.championId)] = score;
+
+          if(p.stats.firstBloodAssist || p.stats.firstBloodKill) { score ++; debug += 'FB'; }
+          if(p.stats.firstTowerAssist || p.stats.firstTowerKill) { score ++; debug += 'FT';}
+          if(p.stats.firstInhibitorAssist || p.stats.firstInhibitorKill) { score ++; debug += 'FI';}
+          if(p.teamId === baron || baron === 'equal') { score ++; debug += 'b';}
+          if(p.teamId === dragon || dragon === 'equal') { score ++;debug += 'd'; }
+          if(p.teamId === tower || tower === 'equal') { score ++; debug += 't';}
+          if(p.teamId === inhibitor || inhibitor === 'equal') { score ++; debug += 'i';}
+          if(p.stats.winner) { score ++; debug += 'w';}
+          matchGrade[String(p.championId)] = [score, debug];
         }
 
         let counter = 0;
@@ -165,7 +167,11 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
               console.log(err);
               res.end();
             }
-            matchGrade[champ.name] = scoreToLetter(matchGrade[k]);
+            matchGrade[champ.name] = {
+              'score': matchGrade[k][0],
+              'grade': scoreToGrade(matchGrade[k][0]),
+              'debug': matchGrade[k][1],
+            };
             delete matchGrade[k];
             counter ++;
             if(counter >= 10) {

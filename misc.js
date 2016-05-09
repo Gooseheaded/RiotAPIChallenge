@@ -1,7 +1,12 @@
 'use strict';
 
-var scoreToLetter = function(score) {
+var calculateScore = function(match) {
+  
+}
+
+var scoreToGrade = function(score) {
   switch(score) {
+    case 0: return 'F';
     case 1: return 'C-';
     case 2: return 'C';
     case 3: return 'C+';
@@ -18,4 +23,4 @@ var scoreToLetter = function(score) {
   }
 }
 
-module.exports = scoreToLetter;
+module.exports = scoreToGrade;
