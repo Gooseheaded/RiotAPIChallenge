@@ -1,7 +1,7 @@
 'use strict';
 
 var calculateScore = function(match) {
-  
+
 }
 
 var scoreToGrade = function(score) {
@@ -23,4 +23,24 @@ var scoreToGrade = function(score) {
   }
 }
 
-module.exports = scoreToGrade;
+var gradeToScore = function(score) {
+  if(score === 'F') { return 0; }
+  else if(score === 'C-') { return 1; }
+  else if(score === 'C') { return 2; }
+  else if(score === 'C+') { return 3; }
+  else if(score === 'B-') { return 4; }
+  else if(score === 'B') { return 5; }
+  else if(score === 'B+') { return 6; }
+  else if(score === 'A-') { return 7; }
+  else if(score === 'A') { return 8; }
+  else if(score === 'A+') { return 9; }
+  else if(score === 'S-') { return 10; }
+  else if(score === 'S') { return 11; }
+  else if(score === 'S+') { return 12; }
+  else { return -1; }
+}
+
+module.exports = {
+  'scoreToGrade': scoreToGrade,
+  'gradeToScore': gradeToScore,
+}

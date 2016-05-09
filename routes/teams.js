@@ -5,7 +5,7 @@ var apiKey = require('../_/data.json').key;
 var express = require('express');
 var request = require('request');
 var leagueAPI = require('leagueapi');
-var scoreToGrade = require('../misc.js');
+var misc = require('../misc.js');
 var router = express.Router();
 
 /* GET list of teams given a summoner name */
@@ -214,14 +214,27 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
                 for(let champ in mg) {
                   let prev = powerPicks[champ] ? powerPicks[champ] : {'score': 0, 'count': 0}
                   powerPicks[champ] = {
+                    'name': champ,
                     'score': prev.score + mg[champ].score,
                     'count': prev.count + 1,
                   };
                 }
               }
 
+              let final = [];
               for(let champ in powerPicks) {
-                powerPicks[champ] = scoreToGrade(Math.floor(powerPicks[champ].score / powerPicks[champ].count));
+                final.push({
+                  'name': champ,
+                  'grade': misc.scoreToGrade(Math.floor(powerPicks[champ].score / powerPicks[champ].count)),
+                });
+              }
+
+              final.sort((a,b) => misc.gradeToScore(a.grade) > misc.gradeToScore(b.grade));
+              console.log(final);
+
+              powerPicks = {};
+              for(let champ of final) {
+                powerPicks[champ.name] = champ.grade;
               }
 
               console.log();
