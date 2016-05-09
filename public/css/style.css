@@ -74,6 +74,14 @@
     color: black;
 }
 
+#tname-label{
+    text-align: center;
+    width: 100%;
+    color: white;
+    padding: 10px;
+
+}
+
 .team-wrap{
     padding: 20px;
     
@@ -99,11 +107,16 @@
 
 #row3{
     
-    padding: 250px 5% 0px 5%;
-        opacity: 0.0;
+    padding: 100px 5% 0px 5%;
+    opacity: 0.0;
     display: none;
     
     
+}
+
+.loading{
+    opacity: 0;
+    display: none;
 }
 
 .team-wrap{
