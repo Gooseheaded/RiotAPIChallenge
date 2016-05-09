@@ -106,6 +106,10 @@
     padding: 10px;
     position: relative;
     z-index: 100;
+    
+        background-color: #e5c172 !important;
+    border-bottom: 10px solid #C39738;
+    color: #8C6D2A;
 
 }
 
