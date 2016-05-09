@@ -1,0 +1,81 @@
+.background {
+    background: url('../img/login-back.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: -64px;
+    height: 100%;
+    
+}
+
+.circ-wrap{
+    width: 100%;
+    height: 50px;
+    
+}
+
+.team-circ{
+    margin: 0 auto;
+    background: white;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50px;
+    border-radius: 25px;
+    font-size: 25px;
+    color: black;
+}
+
+.team-wrap{
+    padding: 20px;
+    
+}
+
+.team-sq{
+    height: 180px;
+    color: white;
+    padding: 20px;
+}
+
+.team-sq p{
+    text-align: center;
+    
+}
+
+#row2{
+    
+    padding: 250px 5% 0px 5%;
+    opacity: 0.0;
+    display: none;
+}
+
+.team-wrap{
+    background: ;
+    height: 200px;
+}
+
+body{
+    height: 100%;
+    background: black;
+}
+
+#row1{
+    position: relative;
+}
+
+html{
+    height: 100%;
+   
+}
+
+.slider{
+    margin-top: 30px;
+    
+}
+
+.login-card{
+    height: auto;
+    opacity: 0;
+    margin-top: 200px;
+}
