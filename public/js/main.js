@@ -81,6 +81,22 @@ $(document).ready(function(){
         
         
     });
+    
+    $(".background").animate({
+                                        opacity: 0,
+                                    },1000,"easeInBack", function(){
+											
+											$(".background").css("background","#304050");
+											$("#row3").css("background","#304050");
+                                             $(".background").animate({
+                                        opacity: 1,
+                                    },1000,"easeInBack", function(){
+											
+                                             
+
+                                    });
+
+                                    });
                                 var jqxhr = $.get( "/teams/by-team-id/"+id+"/"+region, function(data) {
                                     console.log( team );
                                    
@@ -101,6 +117,7 @@ $(document).ready(function(){
                                         $('#row3').append('<div class="col m3 l2 s6"> <div class="champ-wrap">  <img class="champ-img" src="http://ddragon.leagueoflegends.com/cdn/img/champion/loading/'+tempkey+'_0.jpg"/>  <div class="grade-wrap"> <div class="grade-circ"> <p>'+grade+'</p> </div> </div> <div class=" blue-grey darken-4 champ-name"> <p>'+key+'</p> </div> </div> </div>');
 
                                     }
+                                    
                                     
                                     
                                     $("#row3").animate({
