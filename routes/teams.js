@@ -18,9 +18,9 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
   // get summoner id from summoner name
   leagueAPI.Summoner.getByName(summonerName, function(err, summoner) {
     if(err) {
+      console.log('leagueAPI.Summoner.getByName');
       console.log(err);
-      // TODO: Handle error!
-      res.end();
+      res.send({'error': err});
       return;
     }
 
@@ -31,6 +31,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
     // get summoner teams from summoner id
     leagueAPI.getTeams(summonerID, summonerRegion, function(err, teams) {
       if(err) {
+        console.log('leagueAPI.getTeams');
         console.log(err);
         res.send({'error': err})
         return;
