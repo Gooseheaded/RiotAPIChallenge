@@ -40,8 +40,19 @@ $(document).ready(function(){
             top:"40%",
         },1000,"easeInBack", function(){
             var jqxhr = $.get( "/teams/by-summoner-name/"+sumname+"/"+region, function(data) {
-              console.log( data );
-                
+             var error = data.error;
+             data = data.data;
+                if(error){
+									  	swal({
+									        title: '<i class="fa fa-exclamation-circle"></i> Error no teams found',
+									        text: '<a class="btn" href="/" >Retry</a>',
+									        inputClass: 'loading',
+									        showConfirmButton: false,
+									        allowOutsideClick: false,
+									        
+									        
+									    });
+									  }
                 for(var i = 0; i < data.length; i++){
                     team[data[i].id] = data[i];
                    
@@ -99,6 +110,20 @@ $(document).ready(function(){
                                     });
                                 var jqxhr = $.get( "/teams/by-team-id/"+id+"/"+region, function(data) {
                                     console.log( team );
+                                      var error = data.error;
+									  data = data.data;
+									  
+									  if(error){
+									  	swal({
+									        title: '<i class="fa fa-exclamation-circle"></i> Error no matches found',
+									        text: '<a class="btn" href="/" >Retry</a>',
+									        inputClass: 'loading',
+									        showConfirmButton: false,
+									        allowOutsideClick: false,
+									        
+									        
+									    });
+									  }
                                    
                                    for (var key in data) {
                                     
@@ -129,9 +154,16 @@ $(document).ready(function(){
                                     });
                                 })
                                 .fail(function() {
-                                        alert( "error" );
+                                     swal({
+									        title: '<i class="fa fa-exclamation-circle"></i> Error no matches found',
+									        text: '<a class="btn" href="/" >Retry</a>',
+									        inputClass: 'loading',
+									        showConfirmButton: false,
+									        allowOutsideClick: false,
+									        
+
                                 });
-                   
+                   });
                         });
                        
 
@@ -141,14 +173,20 @@ $(document).ready(function(){
                 });
             })
             .fail(function() {
-                alert( "error" );
+                swal({
+									        title: '<i class="fa fa-exclamation-circle"></i> Error no teams found',
+									        text: '<a class="btn" href="/" >Retry</a>',
+									        inputClass: 'loading',
+									        showConfirmButton: false,
+									        allowOutsideClick: false,
+									        
             });
        
         });
           
               
              
-        
+        });
         
     });
        
