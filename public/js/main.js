@@ -109,7 +109,7 @@ $(document).ready(function(){
 
                                     });
                                 var jqxhr = $.get( "/teams/by-team-id/"+id+"/"+region, function(data) {
-                                    console.log( team );
+                                    console.log( data.error);
                                       var error = data.error;
 									  data = data.data;
 									  
@@ -148,7 +148,7 @@ $(document).ready(function(){
                                     $("#row3").animate({
                                         opacity: 1,
                                     },1000,"easeInBack", function(){
-											if (!error){
+											if (error != true){
                                              swal.close(); 
 											}
                                     });
