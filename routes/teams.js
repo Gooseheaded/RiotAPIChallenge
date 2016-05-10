@@ -19,8 +19,10 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
   leagueAPI.Summoner.getByName(summonerName, function(err, summoner) {
     if(err) {
       console.log('leagueAPI.Summoner.getByName');
+      console.log('==========');
       console.log(err);
-      res.send({'error': err});
+      console.log('==========');
+      res.send({'error': true});
       return;
     }
 
@@ -33,7 +35,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
       if(err) {
         console.log('leagueAPI.getTeams');
         console.log(err);
-        res.send({'error': err})
+        res.send({'error': true})
         return;
       }
 
@@ -46,7 +48,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
         });
       }
 
-      res.send(teamNames);
+      res.send({'error': false, 'data': teamNames});
     });
   });
 });
@@ -251,7 +253,7 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
               console.log();
               console.log('Delivered.')
               console.log();
-              res.send(powerPicks);
+              res.send({'error': false, 'data': powerPicks});
               stop = true;
               return;
             }
