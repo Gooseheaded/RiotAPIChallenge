@@ -71,6 +71,11 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
     let team = teamDTO[teamID];
     let matchIDs = [];
     let maxMatches = 10;
+    if(!team.matchHistory) {
+      res.send({'error': true});
+      return;
+    }
+
     for(let m of team.matchHistory) {
       if(maxMatches <= 0) {
         break;
