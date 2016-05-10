@@ -148,9 +148,9 @@ $(document).ready(function(){
                                     $("#row3").animate({
                                         opacity: 1,
                                     },1000,"easeInBack", function(){
-											
-                                             swal.close() 
-
+											if (!error){
+                                             swal.close(); 
+											}
                                     });
                                 })
                                 .fail(function() {
