@@ -64,13 +64,18 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
     if(err) {
       console.log('leagueAPI.getTeam');
       console.log(err);
-      // TODO: Handle error!
-      res.end();
+      res.send({'error': true});
+      return;
     }
 
     let team = teamDTO[teamID];
     let matchIDs = [];
     let maxMatches = 10;
+    if(!team.matchHistory) {
+      res.send({'error': true});
+      return;
+    }
+
     for(let m of team.matchHistory) {
       if(maxMatches <= 0) {
         break;
