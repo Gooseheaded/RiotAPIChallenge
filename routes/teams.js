@@ -32,7 +32,7 @@ router.get('/by-summoner-name/:name/:region', function(req, res, next) {
     leagueAPI.getTeams(summonerID, summonerRegion, function(err, teams) {
       if(err) {
         console.log(err);
-        // TODO: Handle error!
+        res.send({'error': err})
         return;
       }
 
