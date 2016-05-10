@@ -64,7 +64,7 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
     if(err) {
       console.log('leagueAPI.getTeam');
       console.log(err);
-      res.send({'error': err});
+      res.send({'error': true});
       return;
     }
 
