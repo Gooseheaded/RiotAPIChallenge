@@ -64,8 +64,8 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
     if(err) {
       console.log('leagueAPI.getTeam');
       console.log(err);
-      // TODO: Handle error!
-      res.end();
+      res.send({'error': err});
+      return;
     }
 
     let team = teamDTO[teamID];
