@@ -89,6 +89,7 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
     }
 
     let matchGrades = [];
+    let failureCounter = 0;
     for(let m in matchIDs) {
       console.log('Adding id: ' + matchIDs[m]);
       leagueAPI.getMatch(matchIDs[m][0], false, teamRegion, function(err, match) {
@@ -97,6 +98,12 @@ router.get('/by-team-id/:team/:region', function(req, res, next) {
         if(err) {
           console.log('leagueAPI.getMatch');
           console.log(err);
+          failureCounter ++;
+
+          if(failureCounter >= 7) {
+            res.send({'error': true});
+          }
+
           // TODO: Handle error!
           return;
         }
