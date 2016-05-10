@@ -133,6 +133,8 @@ $(document).ready(function(){
 	                                    
                                     }else if (key == "Kha'Zix"){
 	                                    tempkey = "Khazix";
+                                    }else if (key == "Vel'Koz"){
+	                                    tempkey = "Velkoz";
                                     }else{
 	                                    tempkey = key.replace(/[\s\'\`\´\.]/g,"");
                                     }
